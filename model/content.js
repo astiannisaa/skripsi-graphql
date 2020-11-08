@@ -1,12 +1,12 @@
 const Mongoose = require("mongoose");
 const Schema = Mongoose.Schema;
 
-const Course = new Schema({
+const Content = new Schema({
   _id: String,
-  type: String,
+  order: String,
   title: String,
-  description: String,
+  content: String,
   all: String,
 });
 
-module.exports = Mongoose.model("Course", Course);
+module.exports = Mongoose.model("Content", Content);

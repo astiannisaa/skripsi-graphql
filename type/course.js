@@ -2,6 +2,7 @@ const GraphQL = require("graphql");
 const { GraphQLObjectType, GraphQLString, GraphQLList } = GraphQL;
 
 const LearningPath = require("../model/learningpath");
+const KeyFeature = require("../model/keyfeature");
 
 const Course = new GraphQLObjectType({
   name: "Course",
@@ -10,14 +11,18 @@ const Course = new GraphQLObjectType({
     _id: { type: GraphQLString },
     type: { type: GraphQLString },
     title: { type: GraphQLString },
-    start: { type: GraphQLString },
-    duration: { type: GraphQLString },
     description: { type: GraphQLString },
     // dependency
     learningpath: {
       type: new GraphQLList(require("./learningpath")),
       resolve(parent, args) {
         return LearningPath.find({ course: parent._id });
+      },
+    },
+    keyfeature: {
+      type: new GraphQLList(require("./keyfeature")),
+      resolve(parent, args) {
+        return KeyFeature.find({ course: parent._id });
       },
     },
   }),
