@@ -1,7 +1,6 @@
 const Mongoose = require("mongoose");
-const Schema = Mongoose.Schema;
 
-const Content = new Schema({
+const Content = new Mongoose.Schema({
   _id: String,
   order: String,
   title: String,

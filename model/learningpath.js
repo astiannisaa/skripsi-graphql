@@ -1,7 +1,6 @@
 const Mongoose = require("mongoose");
-const Schema = Mongoose.Schema;
 
-const LearningPath = new Schema({
+const LearningPath = new Mongoose.Schema({
   _id: String,
   order: String,
   title: String,

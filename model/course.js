@@ -1,7 +1,6 @@
 const Mongoose = require("mongoose");
-const Schema = Mongoose.Schema;
 
-const Course = new Schema({
+const Course = new Mongoose.Schema({
   _id: String,
   type: String,
   title: String,

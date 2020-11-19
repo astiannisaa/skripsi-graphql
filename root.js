@@ -2,12 +2,14 @@ const GraphQL = require("graphql");
 const { GraphQLObjectType, GraphQLString, GraphQLList } = GraphQL;
 
 // model
-const CourseModel = require("./model/course");
 const ContentModel = require("./model/content");
+const CourseModel = require("./model/course");
+const QuizModel = require("./model/quiz");
 
 // type
-const CourseType = require("./type/course");
 const ContentType = require("./type/content");
+const CourseType = require("./type/course");
+const QuizType = require("./type/quiz");
 
 const Root = new GraphQLObjectType({
   name: "Root",
@@ -43,6 +45,13 @@ const Root = new GraphQLObjectType({
       args: { _id: { type: GraphQLString } },
       resolve(parent, args) {
         return ContentModel.findById(args._id);
+      },
+    },
+    quizById: {
+      type: QuizType,
+      args: { _id: { type: GraphQLString } },
+      resolve(parent, args) {
+        return QuizModel.findById(args._id);
       },
     },
   },

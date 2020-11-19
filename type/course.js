@@ -1,8 +1,9 @@
 const GraphQL = require("graphql");
 const { GraphQLObjectType, GraphQLString, GraphQLList } = GraphQL;
 
-const LearningPath = require("../model/learningpath");
 const KeyFeature = require("../model/keyfeature");
+const LearningPath = require("../model/learningpath");
+const Quiz = require("../model/quiz");
 
 const Course = new GraphQLObjectType({
   name: "Course",
@@ -23,6 +24,12 @@ const Course = new GraphQLObjectType({
       type: new GraphQLList(require("./keyfeature")),
       resolve(parent, args) {
         return KeyFeature.find({ course: parent._id });
+      },
+    },
+    quiz: {
+      type: new GraphQLList(require("./quiz")),
+      resolve(parent, args) {
+        return Quiz.find({ course: parent._id });
       },
     },
   }),

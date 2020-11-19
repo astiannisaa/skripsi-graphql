@@ -1,13 +1,12 @@
-const Express = require("express");
-const GraphQLHTTP = require("express-graphql").graphqlHTTP;
-const Mongoose = require("mongoose");
 const Cors = require("cors");
-const App = Express();
-
+const Express = require("express");
+const { graphqlHTTP } = require("express-graphql");
+const Mongoose = require("mongoose");
 const Schema = require("./schema");
 
+const App = Express();
 App.use(Cors());
-App.use("/graphql", GraphQLHTTP({ schema: Schema, graphiql: true }));
+App.use("/graphql", graphqlHTTP({ schema: Schema, graphiql: true }));
 App.listen(process.env.PORT || 4000, () => {
   console.log("Listening at port 4000");
 });

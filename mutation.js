@@ -3,16 +3,20 @@ const { GraphQLObjectType, GraphQLString } = GraphQL;
 const randomstring = require("randomstring");
 
 // model
-const CourseModel = require("./model/course");
-const LearningPathModel = require("./model/learningpath");
-const KeyFeatureModel = require("./model/keyfeature");
 const ContentModel = require("./model/content");
+const CourseModel = require("./model/course");
+const KeyFeatureModel = require("./model/keyfeature");
+const LearningPathModel = require("./model/learningpath");
+const QuestionModel = require("./model/question");
+const QuizModel = require("./model/quiz");
 
 // type
-const CourseType = require("./type/course");
-const LearningPathType = require("./type/learningpath");
-const KeyFeatureType = require("./type/keyfeature");
 const ContentType = require("./type/content");
+const CourseType = require("./type/course");
+const KeyFeatureType = require("./type/keyfeature");
+const LearningPathType = require("./type/learningpath");
+const QuestionType = require("./type/question");
+const QuizType = require("./type/quiz");
 
 const Mutation = new GraphQLObjectType({
   name: "Mutation",
@@ -160,6 +164,82 @@ const Mutation = new GraphQLObjectType({
       args: { _id: { type: GraphQLString } },
       resolve(parent, args) {
         const data = ContentModel.findByIdAndDelete(args._id);
+        return data;
+      },
+    },
+    quiz_add: {
+      type: QuizType,
+      args: {
+        title: { type: GraphQLString },
+        course: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        const data = new QuizModel({
+          _id: randomstring.generate(),
+          title: args.title,
+          course: args.course,
+          all: "true",
+        });
+        return data.save();
+      },
+    },
+    quiz_update: {
+      type: QuizType,
+      args: {
+        _id: { type: GraphQLString },
+        title: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        const update = {
+          title: args.title,
+        };
+        const data = QuizModel.findByIdAndUpdate(args._id, update, {
+          new: true,
+        });
+        return data;
+      },
+    },
+    quiz_delete: {
+      type: QuizType,
+      args: { _id: { type: GraphQLString } },
+      resolve(parent, args) {
+        const data = QuizModel.findByIdAndDelete(args._id);
+        return data;
+      },
+    },
+    question_add: {
+      type: QuestionType,
+      args: {
+        order: { type: GraphQLString },
+        question: { type: GraphQLString },
+        answer: { type: GraphQLString },
+        a: { type: GraphQLString },
+        b: { type: GraphQLString },
+        c: { type: GraphQLString },
+        d: { type: GraphQLString },
+        quiz: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        const data = new QuestionModel({
+          _id: randomstring.generate(),
+          order: args.order,
+          question: args.question,
+          answer: args.answer,
+          a: args.a,
+          b: args.b,
+          c: args.c,
+          d: args.d,
+          quiz: args.quiz,
+          all: "true",
+        });
+        return data.save();
+      },
+    },
+    question_delete: {
+      type: QuestionType,
+      args: { _id: { type: GraphQLString } },
+      resolve(parent, args) {
+        const data = QuestionModel.findByIdAndDelete(args._id);
         return data;
       },
     },
