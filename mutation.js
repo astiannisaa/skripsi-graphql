@@ -3,20 +3,24 @@ const { GraphQLObjectType, GraphQLString } = GraphQL;
 const randomstring = require("randomstring");
 
 // model
+const ClassModel = require("./model/class");
 const ContentModel = require("./model/content");
 const CourseModel = require("./model/course");
 const KeyFeatureModel = require("./model/keyfeature");
 const LearningPathModel = require("./model/learningpath");
 const QuestionModel = require("./model/question");
 const QuizModel = require("./model/quiz");
+const TaskModel = require("./model/task");
 
 // type
+const ClassType = require("./type/class");
 const ContentType = require("./type/content");
 const CourseType = require("./type/course");
 const KeyFeatureType = require("./type/keyfeature");
 const LearningPathType = require("./type/learningpath");
 const QuestionType = require("./type/question");
 const QuizType = require("./type/quiz");
+const TaskType = require("./type/task");
 
 const Mutation = new GraphQLObjectType({
   name: "Mutation",
@@ -240,6 +244,92 @@ const Mutation = new GraphQLObjectType({
       args: { _id: { type: GraphQLString } },
       resolve(parent, args) {
         const data = QuestionModel.findByIdAndDelete(args._id);
+        return data;
+      },
+    },
+    class_add: {
+      type: ClassType,
+      args: {
+        name: { type: GraphQLString },
+        course: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        const data = new ClassModel({
+          _id: randomstring.generate(),
+          name: args.name,
+          course: args.course,
+          all: "true",
+        });
+        return data.save();
+      },
+    },
+    class_update: {
+      type: ClassType,
+      args: {
+        _id: { type: GraphQLString },
+        name: { type: GraphQLString },
+        course: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        const update = {
+          name: args.name,
+          course: args.course,
+        };
+        const data = ClassModel.findByIdAndUpdate(args._id, update, {
+          new: true,
+        });
+        return data;
+      },
+    },
+    class_delete: {
+      type: ClassType,
+      args: { _id: { type: GraphQLString } },
+      resolve(parent, args) {
+        const data = ClassModel.findByIdAndDelete(args._id);
+        return data;
+      },
+    },
+    task_add: {
+      type: TaskType,
+      args: {
+        title: { type: GraphQLString },
+        description: { type: GraphQLString },
+        class: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        const data = new TaskModel({
+          _id: randomstring.generate(),
+          title: args.title,
+          description: args.description,
+          class: args.class,
+          all: "true",
+        });
+        return data.save();
+      },
+    },
+    task_update: {
+      type: TaskType,
+      args: {
+        _id: { type: GraphQLString },
+        title: { type: GraphQLString },
+        description: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        const update = {
+          title: args.title,
+          description: args.description,
+        };
+        const data = TaskModel.findByIdAndUpdate(args._id, update, {
+          new: true,
+        });
+        return data;
+      },
+    },
+    task_delete: {
+      type: TaskType,
+      args: { _id: { type: GraphQLString } },
+      resolve(parent, args) {
+        const data = TaskModel.findByIdAndDelete(args._id);
         return data;
       },
     },
