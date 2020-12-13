@@ -6,21 +6,25 @@ const randomstring = require("randomstring");
 const ClassModel = require("./model/class");
 const ContentModel = require("./model/content");
 const CourseModel = require("./model/course");
+const EnrollmentModel = require("./model/enrollment");
 const KeyFeatureModel = require("./model/keyfeature");
 const LearningPathModel = require("./model/learningpath");
 const QuestionModel = require("./model/question");
 const QuizModel = require("./model/quiz");
 const TaskModel = require("./model/task");
+const UserModel = require("./model/user");
 
 // type
 const ClassType = require("./type/class");
 const ContentType = require("./type/content");
 const CourseType = require("./type/course");
+const EnrollmentType = require("./type/enrollment");
 const KeyFeatureType = require("./type/keyfeature");
 const LearningPathType = require("./type/learningpath");
 const QuestionType = require("./type/question");
 const QuizType = require("./type/quiz");
 const TaskType = require("./type/task");
+const UserType = require("./type/user");
 
 const Mutation = new GraphQLObjectType({
   name: "Mutation",
@@ -330,6 +334,86 @@ const Mutation = new GraphQLObjectType({
       args: { _id: { type: GraphQLString } },
       resolve(parent, args) {
         const data = TaskModel.findByIdAndDelete(args._id);
+        return data;
+      },
+    },
+    user_add: {
+      type: UserType,
+      args: {
+        name: { type: GraphQLString },
+        email: { type: GraphQLString },
+        phonenumber: { type: GraphQLString },
+        password: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        const data = new UserModel({
+          _id: randomstring.generate(),
+          name: args.name,
+          email: args.email,
+          phonenumber: args.phonenumber,
+          password: args.password,
+          all: "true",
+        });
+        return data.save();
+      },
+    },
+    user_update: {
+      type: UserType,
+      args: {
+        _id: { type: GraphQLString },
+        name: { type: GraphQLString },
+        email: { type: GraphQLString },
+        phonenumber: { type: GraphQLString },
+        password: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        const update = {
+          name: args.name,
+          email: args.email,
+          phonenumber: args.phonenumber,
+          password: args.password,
+        };
+        const data = UserModel.findByIdAndUpdate(args._id, update, {
+          new: true,
+        });
+        return data;
+      },
+    },
+    enrollment_add: {
+      type: EnrollmentType,
+      args: {
+        user: { type: GraphQLString },
+        course: { type: GraphQLString },
+        class: { type: GraphQLString },
+        status: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        const data = new EnrollmentModel({
+          _id: randomstring.generate(),
+          user: args.user,
+          course: args.course,
+          class: args.class,
+          status: args.status,
+          all: "true",
+        });
+        return data.save();
+      },
+    },
+    enrollment_update: {
+      type: EnrollmentType,
+      args: {
+        _id: { type: GraphQLString },
+        status: { type: GraphQLString },
+        class: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        const update = {
+          status: args.status,
+          class: args.class,
+        };
+        const data = EnrollmentModel.findByIdAndUpdate(args._id, update, {
+          new: true,
+        });
         return data;
       },
     },

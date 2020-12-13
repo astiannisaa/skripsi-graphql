@@ -2,6 +2,7 @@ const GraphQL = require("graphql");
 const { GraphQLObjectType, GraphQLString, GraphQLList } = GraphQL;
 
 const Course = require("../model/course");
+const Enrollment = require("../model/enrollment");
 const Task = require("../model/task");
 
 const Class = new GraphQLObjectType({
@@ -21,6 +22,12 @@ const Class = new GraphQLObjectType({
       type: new GraphQLList(require("./task")),
       resolve(parent, args) {
         return Task.find({ class: parent._id });
+      },
+    },
+    enrollment: {
+      type: new GraphQLList(require("./enrollment")),
+      resolve(parent, args) {
+        return Enrollment.find({ class: parent._id });
       },
     },
   }),

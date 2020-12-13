@@ -1,6 +1,8 @@
 const GraphQL = require("graphql");
 const { GraphQLObjectType, GraphQLString, GraphQLList } = GraphQL;
 
+const Class = require("../model/class");
+const Enrollment = require("../model/enrollment");
 const KeyFeature = require("../model/keyfeature");
 const LearningPath = require("../model/learningpath");
 const Quiz = require("../model/quiz");
@@ -30,6 +32,18 @@ const Course = new GraphQLObjectType({
       type: new GraphQLList(require("./quiz")),
       resolve(parent, args) {
         return Quiz.find({ course: parent._id });
+      },
+    },
+    class: {
+      type: new GraphQLList(require("./class")),
+      resolve(parent, args) {
+        return Class.find({ course: parent._id });
+      },
+    },
+    enrollment: {
+      type: new GraphQLList(require("./enrollment")),
+      resolve(parent, args) {
+        return Enrollment.find({ course: parent._id });
       },
     },
   }),
