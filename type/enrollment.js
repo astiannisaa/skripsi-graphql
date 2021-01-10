@@ -28,6 +28,7 @@ const Enrollment = new GraphQLObjectType({
         return Class.find({ _id: parent.class });
       },
     },
+    materi: { type: GraphQLString },
     status: { type: GraphQLString },
     // dependency
   }),

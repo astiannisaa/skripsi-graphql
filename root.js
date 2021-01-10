@@ -2,19 +2,23 @@ const GraphQL = require("graphql");
 const { GraphQLObjectType, GraphQLString, GraphQLList } = GraphQL;
 
 // model
+const BabModel = require("./model/bab");
 const ClassModel = require("./model/class");
 const ContentModel = require("./model/content");
 const CourseModel = require("./model/course");
 const EnrollmentModel = require("./model/enrollment");
+const MateriModel = require("./model/materi");
 const QuizModel = require("./model/quiz");
 const TaskModel = require("./model/task");
 const UserModel = require("./model/user");
 
 // type
+const BabType = require("./type/bab");
 const ClassType = require("./type/class");
 const ContentType = require("./type/content");
 const CourseType = require("./type/course");
 const EnrollmentType = require("./type/enrollment");
+const MateriType = require("./type/materi");
 const QuizType = require("./type/quiz");
 const TaskType = require("./type/task");
 const UserType = require("./type/user");
@@ -62,6 +66,20 @@ const Root = new GraphQLObjectType({
         return QuizModel.findById(args._id);
       },
     },
+    babById: {
+      type: BabType,
+      args: { _id: { type: GraphQLString } },
+      resolve(parent, args) {
+        return BabModel.findById(args._id);
+      },
+    },
+    materiById: {
+      type: MateriType,
+      args: { _id: { type: GraphQLString } },
+      resolve(parent, args) {
+        return MateriModel.findById(args._id);
+      },
+    },
     allClass: {
       type: new GraphQLList(ClassType),
       resolve(parent, args) {
@@ -91,6 +109,13 @@ const Root = new GraphQLObjectType({
       resolve(parent, args) {
         if (args._id) return UserModel.findById(args._id);
         if (args.email) return UserModel.findOne({ email: args.email });
+      },
+    },
+    enrollmentById: {
+      type: EnrollmentType,
+      args: { _id: { type: GraphQLString } },
+      resolve(parent, args) {
+        return EnrollmentModel.findById(args._id);
       },
     },
     allEnrollment: {

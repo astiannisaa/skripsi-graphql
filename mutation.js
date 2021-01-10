@@ -3,24 +3,28 @@ const { GraphQLObjectType, GraphQLString } = GraphQL;
 const randomstring = require("randomstring");
 
 // model
+const BabModel = require("./model/bab");
 const ClassModel = require("./model/class");
 const ContentModel = require("./model/content");
 const CourseModel = require("./model/course");
 const EnrollmentModel = require("./model/enrollment");
 const KeyFeatureModel = require("./model/keyfeature");
 const LearningPathModel = require("./model/learningpath");
+const MateriModel = require("./model/materi");
 const QuestionModel = require("./model/question");
 const QuizModel = require("./model/quiz");
 const TaskModel = require("./model/task");
 const UserModel = require("./model/user");
 
 // type
+const BabType = require("./type/bab");
 const ClassType = require("./type/class");
 const ContentType = require("./type/content");
 const CourseType = require("./type/course");
 const EnrollmentType = require("./type/enrollment");
 const KeyFeatureType = require("./type/keyfeature");
 const LearningPathType = require("./type/learningpath");
+const MateriType = require("./type/materi");
 const QuestionType = require("./type/question");
 const QuizType = require("./type/quiz");
 const TaskType = require("./type/task");
@@ -251,6 +255,98 @@ const Mutation = new GraphQLObjectType({
         return data;
       },
     },
+    bab_add: {
+      type: BabType,
+      args: {
+        name: { type: GraphQLString },
+        order: { type: GraphQLString },
+        course: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        const data = new BabModel({
+          _id: randomstring.generate(),
+          name: args.name,
+          order: args.order,
+          course: args.course,
+          all: "true",
+        });
+        return data.save();
+      },
+    },
+    bab_update: {
+      type: BabType,
+      args: {
+        _id: { type: GraphQLString },
+        name: { type: GraphQLString },
+        order: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        const update = {
+          name: args.name,
+          order: args.order,
+        };
+        const data = BabModel.findByIdAndUpdate(args._id, update, {
+          new: true,
+        });
+        return data;
+      },
+    },
+    bab_delete: {
+      type: BabType,
+      args: { _id: { type: GraphQLString } },
+      resolve(parent, args) {
+        const data = BabModel.findByIdAndDelete(args._id);
+        return data;
+      },
+    },
+    materi_add: {
+      type: MateriType,
+      args: {
+        name: { type: GraphQLString },
+        content: { type: GraphQLString },
+        order: { type: GraphQLString },
+        bab: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        const data = new MateriModel({
+          _id: randomstring.generate(),
+          name: args.name,
+          content: args.content,
+          order: args.order,
+          bab: args.bab,
+          all: "true",
+        });
+        return data.save();
+      },
+    },
+    materi_update: {
+      type: MateriType,
+      args: {
+        _id: { type: GraphQLString },
+        name: { type: GraphQLString },
+        content: { type: GraphQLString },
+        order: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        const update = {
+          name: args.name,
+          content: args.content,
+          order: args.order,
+        };
+        const data = MateriModel.findByIdAndUpdate(args._id, update, {
+          new: true,
+        });
+        return data;
+      },
+    },
+    materi_delete: {
+      type: MateriType,
+      args: { _id: { type: GraphQLString } },
+      resolve(parent, args) {
+        const data = MateriModel.findByIdAndDelete(args._id);
+        return data;
+      },
+    },
     class_add: {
       type: ClassType,
       args: {
@@ -385,6 +481,7 @@ const Mutation = new GraphQLObjectType({
         user: { type: GraphQLString },
         course: { type: GraphQLString },
         class: { type: GraphQLString },
+        materi: { type: GraphQLString },
         status: { type: GraphQLString },
       },
       resolve(parent, args) {
@@ -393,6 +490,7 @@ const Mutation = new GraphQLObjectType({
           user: args.user,
           course: args.course,
           class: args.class,
+          materi: args.materi,
           status: args.status,
           all: "true",
         });
@@ -410,6 +508,22 @@ const Mutation = new GraphQLObjectType({
         const update = {
           status: args.status,
           class: args.class,
+        };
+        const data = EnrollmentModel.findByIdAndUpdate(args._id, update, {
+          new: true,
+        });
+        return data;
+      },
+    },
+    enrollment_materi: {
+      type: EnrollmentType,
+      args: {
+        _id: { type: GraphQLString },
+        materi: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        const update = {
+          materi: args.materi,
         };
         const data = EnrollmentModel.findByIdAndUpdate(args._id, update, {
           new: true,

@@ -5,6 +5,7 @@ const Enrollment = new Mongoose.Schema({
   user: String,
   course: String,
   class: String,
+  materi: String,
   status: String,
   all: String,
 });
