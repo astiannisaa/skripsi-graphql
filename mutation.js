@@ -1,5 +1,10 @@
 const GraphQL = require("graphql");
-const { GraphQLObjectType, GraphQLString } = GraphQL;
+const {
+  GraphQLObjectType,
+  GraphQLInputObjectType,
+  GraphQLList,
+  GraphQLString,
+} = GraphQL;
 const randomstring = require("randomstring");
 
 // model
@@ -8,6 +13,7 @@ const ClassModel = require("./model/class");
 const ContentModel = require("./model/content");
 const CourseModel = require("./model/course");
 const EnrollmentModel = require("./model/enrollment");
+const InstructorModel = require("./model/instructor");
 const KeyFeatureModel = require("./model/keyfeature");
 const LearningPathModel = require("./model/learningpath");
 const MateriModel = require("./model/materi");
@@ -22,6 +28,7 @@ const ClassType = require("./type/class");
 const ContentType = require("./type/content");
 const CourseType = require("./type/course");
 const EnrollmentType = require("./type/enrollment");
+const InstructorType = require("./type/instructor");
 const KeyFeatureType = require("./type/keyfeature");
 const LearningPathType = require("./type/learningpath");
 const MateriType = require("./type/materi");
@@ -29,6 +36,25 @@ const QuestionType = require("./type/question");
 const QuizType = require("./type/quiz");
 const TaskType = require("./type/task");
 const UserType = require("./type/user");
+
+const TaskInput = new GraphQLInputObjectType({
+  name: "TaskInput",
+  fields: () => {
+    return {
+      _id: { type: GraphQLString },
+    };
+  },
+});
+
+const QuizInput = new GraphQLInputObjectType({
+  name: "QuizInput",
+  fields: () => {
+    return {
+      _id: { type: GraphQLString },
+      score: { type: GraphQLString },
+    };
+  },
+});
 
 const Mutation = new GraphQLObjectType({
   name: "Mutation",
@@ -182,12 +208,14 @@ const Mutation = new GraphQLObjectType({
     quiz_add: {
       type: QuizType,
       args: {
+        order: { type: GraphQLString },
         title: { type: GraphQLString },
         course: { type: GraphQLString },
       },
       resolve(parent, args) {
         const data = new QuizModel({
           _id: randomstring.generate(),
+          order: args.order,
           title: args.title,
           course: args.course,
           all: "true",
@@ -199,10 +227,12 @@ const Mutation = new GraphQLObjectType({
       type: QuizType,
       args: {
         _id: { type: GraphQLString },
+        order: { type: GraphQLString },
         title: { type: GraphQLString },
       },
       resolve(parent, args) {
         const update = {
+          order: args.order,
           title: args.title,
         };
         const data = QuizModel.findByIdAndUpdate(args._id, update, {
@@ -352,12 +382,14 @@ const Mutation = new GraphQLObjectType({
       args: {
         name: { type: GraphQLString },
         course: { type: GraphQLString },
+        instructor: { type: GraphQLString },
       },
       resolve(parent, args) {
         const data = new ClassModel({
           _id: randomstring.generate(),
           name: args.name,
           course: args.course,
+          instructor: args.instructor,
           all: "true",
         });
         return data.save();
@@ -369,11 +401,13 @@ const Mutation = new GraphQLObjectType({
         _id: { type: GraphQLString },
         name: { type: GraphQLString },
         course: { type: GraphQLString },
+        instructor: { type: GraphQLString },
       },
       resolve(parent, args) {
         const update = {
           name: args.name,
           course: args.course,
+          instructor: args.instructor,
         };
         const data = ClassModel.findByIdAndUpdate(args._id, update, {
           new: true,
@@ -392,6 +426,7 @@ const Mutation = new GraphQLObjectType({
     task_add: {
       type: TaskType,
       args: {
+        order: { type: GraphQLString },
         title: { type: GraphQLString },
         description: { type: GraphQLString },
         class: { type: GraphQLString },
@@ -399,6 +434,7 @@ const Mutation = new GraphQLObjectType({
       resolve(parent, args) {
         const data = new TaskModel({
           _id: randomstring.generate(),
+          order: args.order,
           title: args.title,
           description: args.description,
           class: args.class,
@@ -411,11 +447,13 @@ const Mutation = new GraphQLObjectType({
       type: TaskType,
       args: {
         _id: { type: GraphQLString },
+        order: { type: GraphQLString },
         title: { type: GraphQLString },
         description: { type: GraphQLString },
       },
       resolve(parent, args) {
         const update = {
+          order: args.order,
           title: args.title,
           description: args.description,
         };
@@ -482,6 +520,8 @@ const Mutation = new GraphQLObjectType({
         course: { type: GraphQLString },
         class: { type: GraphQLString },
         materi: { type: GraphQLString },
+        task: { type: new GraphQLList(TaskInput) },
+        quiz: { type: new GraphQLList(QuizInput) },
         status: { type: GraphQLString },
       },
       resolve(parent, args) {
@@ -491,6 +531,8 @@ const Mutation = new GraphQLObjectType({
           course: args.course,
           class: args.class,
           materi: args.materi,
+          task: args.task,
+          quiz: args.quiz,
           status: args.status,
           all: "true",
         });
@@ -528,6 +570,84 @@ const Mutation = new GraphQLObjectType({
         const data = EnrollmentModel.findByIdAndUpdate(args._id, update, {
           new: true,
         });
+        return data;
+      },
+    },
+    enrollment_task: {
+      type: EnrollmentType,
+      args: {
+        _id: { type: GraphQLString },
+        task: { type: new GraphQLList(TaskInput) },
+      },
+      resolve(parent, args) {
+        const update = {
+          task: args.task,
+        };
+        const data = EnrollmentModel.findByIdAndUpdate(args._id, update, {
+          new: true,
+        });
+        return data;
+      },
+    },
+    enrollment_quiz: {
+      type: EnrollmentType,
+      args: {
+        _id: { type: GraphQLString },
+        quiz: { type: new GraphQLList(QuizInput) },
+      },
+      resolve(parent, args) {
+        const update = {
+          quiz: args.quiz,
+        };
+        const data = EnrollmentModel.findByIdAndUpdate(args._id, update, {
+          new: true,
+        });
+        return data;
+      },
+    },
+    instructor_add: {
+      type: InstructorType,
+      args: {
+        name: { type: GraphQLString },
+        email: { type: GraphQLString },
+        password: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        const data = new InstructorModel({
+          _id: randomstring.generate(),
+          name: args.name,
+          email: args.email,
+          password: args.password,
+          all: "true",
+        });
+        return data.save();
+      },
+    },
+    instructor_update: {
+      type: InstructorType,
+      args: {
+        _id: { type: GraphQLString },
+        name: { type: GraphQLString },
+        email: { type: GraphQLString },
+        password: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        const update = {
+          name: args.name,
+          email: args.email,
+          password: args.password,
+        };
+        const data = InstructorModel.findByIdAndUpdate(args._id, update, {
+          new: true,
+        });
+        return data;
+      },
+    },
+    instructor_delete: {
+      type: InstructorType,
+      args: { _id: { type: GraphQLString } },
+      resolve(parent, args) {
+        const data = InstructorModel.findByIdAndDelete(args._id);
         return data;
       },
     },

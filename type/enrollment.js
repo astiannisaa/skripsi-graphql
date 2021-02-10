@@ -5,6 +5,25 @@ const Class = require("../model/class");
 const Course = require("../model/course");
 const User = require("../model/user");
 
+const TaskObject = new GraphQLObjectType({
+  name: "TaskObject",
+  fields: () => {
+    return {
+      _id: { type: GraphQLString },
+    };
+  },
+});
+
+const QuizObject = new GraphQLObjectType({
+  name: "QuizObject",
+  fields: () => {
+    return {
+      _id: { type: GraphQLString },
+      score: { type: GraphQLString },
+    };
+  },
+});
+
 const Enrollment = new GraphQLObjectType({
   name: "Enrollment",
   fields: () => ({
@@ -29,6 +48,8 @@ const Enrollment = new GraphQLObjectType({
       },
     },
     materi: { type: GraphQLString },
+    task: { type: new GraphQLList(TaskObject) },
+    quiz: { type: new GraphQLList(QuizObject) },
     status: { type: GraphQLString },
     // dependency
   }),

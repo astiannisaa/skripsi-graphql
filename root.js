@@ -7,6 +7,7 @@ const ClassModel = require("./model/class");
 const ContentModel = require("./model/content");
 const CourseModel = require("./model/course");
 const EnrollmentModel = require("./model/enrollment");
+const InstructorModel = require("./model/instructor");
 const MateriModel = require("./model/materi");
 const QuizModel = require("./model/quiz");
 const TaskModel = require("./model/task");
@@ -18,6 +19,7 @@ const ClassType = require("./type/class");
 const ContentType = require("./type/content");
 const CourseType = require("./type/course");
 const EnrollmentType = require("./type/enrollment");
+const InstructorType = require("./type/instructor");
 const MateriType = require("./type/materi");
 const QuizType = require("./type/quiz");
 const TaskType = require("./type/task");
@@ -122,6 +124,23 @@ const Root = new GraphQLObjectType({
       type: new GraphQLList(EnrollmentType),
       resolve(parent, args) {
         return EnrollmentModel.find({ all: "true" });
+      },
+    },
+    instructorByParam: {
+      type: InstructorType,
+      args: {
+        _id: { type: GraphQLString },
+        email: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        if (args._id) return InstructorModel.findById(args._id);
+        if (args.email) return InstructorModel.findOne({ email: args.email });
+      },
+    },
+    allInstructor: {
+      type: new GraphQLList(InstructorType),
+      resolve(parent, args) {
+        return InstructorModel.find({ all: "true" });
       },
     },
   },

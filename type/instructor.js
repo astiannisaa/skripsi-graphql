@@ -3,22 +3,22 @@ const { GraphQLObjectType, GraphQLString, GraphQLList } = GraphQL;
 
 const Class = require("../model/class");
 
-const Task = new GraphQLObjectType({
-  name: "Task",
+const Instructor = new GraphQLObjectType({
+  name: "Instructor",
   fields: () => ({
     // model
     _id: { type: GraphQLString },
-    title: { type: GraphQLString },
-    order: { type: GraphQLString },
-    description: { type: GraphQLString },
+    name: { type: GraphQLString },
+    email: { type: GraphQLString },
+    password: { type: GraphQLString },
+    // dependency
     class: {
       type: new GraphQLList(require("./class")),
       resolve(parent, args) {
-        return Class.find({ _id: parent.class });
+        return Class.find({ instructor: parent._id });
       },
     },
-    // dependency
   }),
 });
 
-module.exports = Task;
+module.exports = Instructor;

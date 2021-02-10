@@ -4,6 +4,7 @@ const Class = new Mongoose.Schema({
   _id: String,
   name: String,
   course: String,
+  instructor: String,
   all: String,
 });
 

@@ -9,6 +9,7 @@ const Quiz = new GraphQLObjectType({
   fields: () => ({
     // model
     _id: { type: GraphQLString },
+    order: { type: GraphQLString },
     title: { type: GraphQLString },
     course: {
       type: new GraphQLList(require("./course")),

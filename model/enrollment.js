@@ -6,6 +6,17 @@ const Enrollment = new Mongoose.Schema({
   course: String,
   class: String,
   materi: String,
+  task: [
+    {
+      _id: String,
+    },
+  ],
+  quiz: [
+    {
+      _id: String,
+      score: String,
+    },
+  ],
   status: String,
   all: String,
 });
